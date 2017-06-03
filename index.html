@@ -1,0 +1,59 @@
+<html>
+<head>
+  <meta http-equiv="refresh" content="43200">
+  <title>Le Chateau Pink</title>
+  <style>
+    body {
+      margin: 1% 1% 0 0;
+      background: black;
+      font-family: Helvetica;
+    }
+
+    .webcam {
+      display: block;
+      float: left;
+      width: 49%;
+      margin-left: 1%;
+      -webkit-user-select: none;
+    }
+
+    #devices {
+      clear: both;
+      color: white;
+      list-style: none;
+      display: block;
+      margin-top: 1em;
+    }
+
+    #devices li {
+      display: block;
+      border: 1px white solid;
+      float: left;
+      padding: 1em;
+    }
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"
+          integrity="sha256-3SrLjPeRPa1ofM280r+OMcUjJZKLWJHr6SRtRu3dRb0=" crossorigin="anonymous"></script>
+  <script>
+    angular.module('httpExample', [])
+      .controller('FetchController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
+        $interval(() => $http({
+          method: 'GET',
+          url: 'http://zwave.p.cns.me/json.htm?type=devices&filter=light&used=true&order=Name&plan=0'
+        }).then(response => $scope.devices = response.data.result), 10000)
+      }])
+  </script>
+</head>
+<body ng-app="httpExample" ng-controller="FetchController">
+<main>
+  <div id="cameras">
+    <img class="webcam" src="http://192.168.0.183/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
+    <img class="webcam" src="http://192.168.0.185/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
+  </div>
+  <ul id="devices">
+    <li ng-repeat="(k,v) in devices track by k"><strong>{{v.Name}}:</strong> {{v.Status}}</li>
+  </ul>
+</main>
+</body>
+</html>
