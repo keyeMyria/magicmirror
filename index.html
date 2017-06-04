@@ -40,7 +40,7 @@
       .controller('FetchController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
         $interval(() => $http({
           method: 'GET',
-          url: 'http://zwave.p.cns.me/json.htm?type=devices&filter=light&used=true&order=Name&plan=0'
+          url: 'https://zwave.p.cns.me/json.htm?type=devices&filter=light&used=true&order=Name&plan=0'
         }).then(response => $scope.devices = response.data.result), 10000)
       }])
   </script>
