@@ -2,58 +2,113 @@
 <head>
   <meta http-equiv="refresh" content="3600">
   <title>Le Chateau Pink</title>
-  <style>
-    body {
-      margin: 1% 1% 0 0;
-      background: black;
-      font-family: Helvetica;
-    }
 
-    .webcam {
-      display: block;
-      float: left;
-      width: 49%;
-      margin-left: 1%;
-      -webkit-user-select: none;
-    }
-
-    #devices {
-      clear: both;
-      color: white;
-      list-style: none;
-      display: block;
-      margin-top: 1em;
-    }
-
-    #devices li {
-      display: block;
-      border: 1px white solid;
-      float: left;
-      padding: 1em;
-    }
-
-  </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"
           integrity="sha256-3SrLjPeRPa1ofM280r+OMcUjJZKLWJHr6SRtRu3dRb0=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"
+          integrity="sha256-bFYtqOZj1MLDlOrOlxCU9aruDP2zxiIKvmoo+dHsy4w=" crossorigin="anonymous"></script>
   <script>
-    angular.module('httpExample', [])
-      .controller('FetchController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
-        $interval(() => $http({
-          method: 'GET',
-          url: 'https://zwave.p.cns.me/json.htm?type=devices&filter=light&used=true&order=Name&plan=0'
-        }).then(response => $scope.devices = response.data.result), 10000)
+    const cameras = ["192.168.0.183", "192.168.0.185"];
+    const zwave_url = "https://zwave.p.cns.me";
+  </script>
+  <script>
+    angular.module('myApp', [])
+      .controller('MyController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
+        let updatepoll = () => {
+// zwave
+          $http({
+            method: 'GET',
+            url: zwave_url + '/json.htm?type=devices&filter=light&used=true&order=Name&plan=0'
+          })
+            .then(response => $scope.zwaveDevices = response.data.result)
+        }
+// poll
+        updatepoll();
+        $interval(updatepoll, 1000)
+
+// wemo socket
+        const socket = io.connect("http://192.168.0.3:15000");
+        socket.on('connect', () => socket.emit('join', null));
+        $scope.wemoDevices = {};
+        socket.on("send:devicestate", device =>
+          $scope.$apply(() =>
+            $scope.wemoDevices[device.serialnumber] = device
+          ));
+        $scope.cameras = cameras;
       }])
+
+
   </script>
 </head>
-<body ng-app="httpExample" ng-controller="FetchController">
+<body ng-app="myApp" ng-controller="MyController">
 <main>
   <div id="cameras">
-    <img class="webcam" src="http://192.168.0.183/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
-    <img class="webcam" src="http://192.168.0.185/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
+    <img class="webcam" ng-repeat="(k,v) in cameras track by k"
+         src="http://{{v}}/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
   </div>
+
   <ul id="devices">
-    <li ng-repeat="(k,v) in devices track by k"><strong>{{v.Name}}:</strong> {{v.Status}}</li>
+    <li ng-repeat="(k,v) in zwaveDevices |filter: {Favorite:1} track by k" ng-class="v.Status">
+      <strong>{{v.Name}}:</strong>
+      {{v.Status}}
+    </li>
+    <li ng-repeat="(k,v) in wemoDevices track by k" ng-class="v.Status">
+      <strong>{{v.name}}:</strong>
+      {{v.state === 0 ? "off" : "on"}}
+    </li>
   </ul>
 </main>
 </body>
+
+</body>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    font-family: Helvetica;
+    color: white;
+  }
+
+  .webcam {
+    display: block;
+    float: left;
+    width: 49.5%;
+    margin-left: 1%;
+    -webkit-user-select: none;
+  }
+
+  .webcam:first-child {
+    margin-left: 0;
+  }
+
+  #devices {
+    clear: both;
+    list-style: none;
+    display: block;
+    padding: 1em 0 0 0;
+    margin: 0;
+  }
+
+  #devices li {
+    display: block;
+    border: 1px #7F7F7F solid;
+    float: left;
+    margin: 0;
+    padding: 1em;
+    text-transform: capitalize;
+  }
+
+  #devices li.unlocked {
+    background: red;
+    animation: blinker 1s linear infinite;
+  }
+
+  @keyframes blinker {
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+</style>
 </html>
