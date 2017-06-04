@@ -1,5 +1,14 @@
 pipeline:
 
+  build:
+    image: docker
+    commands:
+      - docker build -t pinked/magicmirror:latest .
+      - docker login -u="chrisns" -p=${DOCKER_PASSWORD}
+      - docker push pinked/magicmirror:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   deploy:
     image: docker
     commands:
