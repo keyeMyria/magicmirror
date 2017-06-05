@@ -2,4 +2,4 @@ FROM nginx:alpine
 COPY . /usr/share/nginx/html
 
 HEALTHCHECK --interval=5m --timeout=3s \
-  CMD curl -f http://localhost:80/ || exit 1
+  CMD wget -q localhost:80 -O /dev/null || exit 1
