@@ -11,6 +11,8 @@
   <script>
     const cameras = ["192.168.0.183", "192.168.0.185"];
     const zwave_url = "http://zwave.p.cns.me";
+    const alarm_url = "http://visonic.p.cns.me/";
+    const wemo_url = "http://192.168.0.3:15000";
   </script>
   <script>
     angular.module('myApp', [])
@@ -19,16 +21,23 @@
 // zwave
           $http({
             method: 'GET',
-            url: zwave_url + '/json.htm?type=devices&filter=light&used=true&order=Name&plan=0'
+            url: `${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0`
           })
             .then(response => $scope.zwaveDevices = response.data.result)
+
+// alarm status
+          $http({
+            method: 'GET',
+            url: alarm_url
+          })
+            .then(response => $scope.alarm = response.data.partitions[0])
         }
 // poll
         updatepoll();
         $interval(updatepoll, 1000)
 
 // wemo socket
-        const socket = io.connect("http://192.168.0.3:15000");
+        const socket = io.connect(wemo_url);
         socket.on('connect', () => socket.emit('join', null));
         $scope.wemoDevices = {};
         socket.on("send:devicestate", device =>
@@ -49,6 +58,9 @@
   </div>
 
   <ul id="devices">
+    <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status > 0 ?
+      "" : "Not-Ready"}}
+    </li>
     <li ng-repeat="(k,v) in zwaveDevices |filter: {Favorite:1} track by k" ng-class="v.Status">
       <strong>{{v.Name}}:</strong>
       {{v.Status}}
@@ -99,6 +111,20 @@
     text-transform: capitalize;
   }
 
+  #devices li.alarm.disarm {
+    background: green;
+  }
+
+  #devices li.alarm.arm {
+    background: red;
+    animation: blinker 1s linear infinite;
+  }
+
+  #devices li.alarm.home {
+    background: #FFBF00;
+    animation: blinker 5s linear infinite;
+  }
+
   #devices li.unlocked {
     background: red;
     animation: blinker 1s linear infinite;
@@ -106,7 +132,7 @@
 
   @keyframes blinker {
     50% {
-      opacity: 0.3;
+      opacity: 0.5;
     }
   }
 
