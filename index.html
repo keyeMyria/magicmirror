@@ -69,7 +69,7 @@
 <main>
   <div id="cameras">
     <img class="webcam" ng-repeat="(k,v) in cameras track by k"
-         src="http://{{v}}/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
+         ng-if="v" ng-src="http://{{v}}/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
   </div>
   <ul id="devices">
     <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status > 0 ?
