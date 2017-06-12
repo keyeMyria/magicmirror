@@ -17,6 +17,8 @@
   <script>
     angular.module('myApp', [])
       .controller('MyController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
+        $scope.alarmDeviceFilter = (device) => device.subtype == "CONTACT_V" || device.subtype == "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype == "CONTACT_AUX";
+
         let updatepoll = () => {
 // zwave
           $http({
@@ -30,7 +32,10 @@
             method: 'GET',
             url: alarm_url
           })
-            .then(response => $scope.alarm = response.data.partitions[0])
+            .then(response => {
+              $scope.alarm = response.data.partitions[0];
+              $scope.alarm_zones = response.data.zones
+            })
         }
 // poll
         updatepoll();
@@ -60,6 +65,10 @@
   <ul id="devices">
     <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status > 0 ?
       "" : "Not-Ready"}}
+    </li>
+    <li class="alarm-sensors" ng-class="v.troubles[0]"
+        ng-repeat="(k,v) in alarm_zones | filter: alarmDeviceFilter track by k"><strong>{{v.location}}:</strong>
+      {{v.troubles[0] == "OPENED" ? "Open" : "Closed"}}
     </li>
     <li ng-repeat="(k,v) in zwaveDevices |filter: {Favorite:1} track by k" ng-class="v.Status">
       <strong>{{v.Name}}:</strong>
@@ -125,6 +134,7 @@
     animation: blinker 5s linear infinite;
   }
 
+  #devices li.opened,
   #devices li.unlocked {
     background: red;
     animation: blinker 1s linear infinite;
