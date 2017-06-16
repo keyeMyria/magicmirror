@@ -5,11 +5,12 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"
           integrity="sha256-3SrLjPeRPa1ofM280r+OMcUjJZKLWJHr6SRtRu3dRb0=" crossorigin="anonymous"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"
           integrity="sha256-bFYtqOZj1MLDlOrOlxCU9aruDP2zxiIKvmoo+dHsy4w=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"
+          integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
   <script>
-    const cameras = ["192.168.0.183", "192.168.0.185"];
+    const mjpeg_proxy = "http://mjpeg.p.cns.me";
     const zwave_url = "http://zwave.p.cns.me";
     const alarm_url = "http://visonic.p.cns.me/";
     const proximity_url = "http://locator.p.cns.me/";
@@ -19,6 +20,15 @@
     angular.module('myApp', [])
       .controller('MyController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
         $scope.alarmDeviceFilter = (device) => device.subtype == "CONTACT_V" || device.subtype == "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype == "CONTACT_AUX";
+
+// get cameras
+        $http({
+          method: 'GET',
+          url: mjpeg_proxy
+        })
+          .then(response =>
+            $scope.cameras = _.map(response.data, (cam) => mjpeg_proxy + cam)
+          )
 
         let updatepoll = () => {
 // zwave
@@ -51,7 +61,7 @@
         updatepoll();
         $interval(updatepoll, 1000)
 
-// wemo socket
+        // wemo socket
         const socket = io.connect(wemo_url);
         socket.on('connect', () => socket.emit('join', null));
         $scope.wemoDevices = {};
@@ -69,7 +79,7 @@
 <main>
   <div id="cameras">
     <img class="webcam" ng-repeat="(k,v) in cameras track by k"
-         ng-if="v" ng-src="http://{{v}}/cgi-bin/hi3510/snap.cgi?&amp;-getstream">
+         ng-if="v" ng-src="{{v}}">
   </div>
   <ul id="devices">
     <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status > 0 ?
