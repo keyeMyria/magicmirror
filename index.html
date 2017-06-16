@@ -105,7 +105,8 @@
     margin: 0;
     background: black;
     font-family: Helvetica;
-    color: white;
+    font-size: 0.9em;
+    color: #b0b0b0;
   }
 
   .webcam {
@@ -113,7 +114,6 @@
     float: left;
     width: 49.5%;
     margin-left: 1%;
-    -webkit-user-select: none;
   }
 
   .webcam:first-child {
@@ -130,9 +130,10 @@
 
   #devices li {
     display: block;
-    border: 1px #7F7F7F solid;
+    background: #1c1c1c;
+    border-radius: 2em 0;
     float: left;
-    margin: 0;
+    margin: 0.1em;
     padding: 1em;
     text-transform: capitalize;
   }
@@ -140,11 +141,14 @@
   #devices li.proximity.home,
   #devices li.alarm.disarm {
     background: green;
+    color: white;
   }
 
+  #devices li.unlocked,
   #devices li.alarm.arm {
     background: red;
     animation: blinker 1s linear infinite;
+    color: white;
   }
 
   #devices li.proximity.away,
@@ -152,11 +156,7 @@
   #devices li.alarm.home {
     background: #FFBF00;
     animation: blinker 5s linear infinite;
-  }
-
-  #devices li.unlocked {
-    background: red;
-    animation: blinker 1s linear infinite;
+    color: white;
   }
 
   @keyframes blinker {
