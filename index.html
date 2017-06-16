@@ -22,37 +22,25 @@
         $scope.alarmDeviceFilter = (device) => device.subtype == "CONTACT_V" || device.subtype == "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype == "CONTACT_AUX";
 
 // get cameras
-        $http({
-          method: 'GET',
-          url: mjpeg_proxy
-        })
+        $http.get(mjpeg_proxy)
           .then(response =>
             $scope.cameras = _.map(response.data, (cam) => mjpeg_proxy + cam)
           )
 
         let updatepoll = () => {
 // zwave
-          $http({
-            method: 'GET',
-            url: `${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0`
-          })
+          $http.get(`${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0`)
             .then(response => $scope.zwaveDevices = response.data.result)
 
 // alarm status
-          $http({
-            method: 'GET',
-            url: alarm_url
-          })
+          $http.get(alarm_url)
             .then(response => {
               $scope.alarm = response.data.partitions[0];
               $scope.alarm_zones = response.data.zones
             })
 
 // proximity
-          $http({
-            method: 'GET',
-            url: proximity_url
-          })
+          $http.get(proximity_url)
             .then(response =>
               $scope.proximities = response.data
             )
