@@ -10,10 +10,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"
           integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
   <script>
-    const mjpeg_proxy = "http://mjpeg.p.cns.me";
+    const cameras_url = "http://cameras.p.cns.me";
     const zwave_url = "http://zwave.p.cns.me";
-    const alarm_url = "http://visonic.p.cns.me/";
-    const proximity_url = "http://locator.p.cns.me/";
+    const alarm_url = "http://visonic.p.cns.me";
+    const proximity_url = "http://locator.p.cns.me";
     const wemo_url = "http://192.168.0.3:15000";
   </script>
   <script>
@@ -22,10 +22,9 @@
         $scope.alarmDeviceFilter = (device) => device.subtype == "CONTACT_V" || device.subtype == "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype == "CONTACT_AUX";
 
 // get cameras
-        $http.get(mjpeg_proxy)
+        $http.get(cameras_url)
           .then(response =>
-            $scope.cameras = _.map(response.data, (cam) => mjpeg_proxy + cam)
-          )
+            $scope.cameras = response.data)
 
         let updatepoll = () => {
 // zwave
