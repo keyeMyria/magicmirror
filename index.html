@@ -47,7 +47,7 @@
         }
 // poll
         updatepoll();
-        $interval(updatepoll, 1000)
+        $interval(updatepoll, 3000)
 
         // wemo socket
         const socket = io.connect(wemo_url);
