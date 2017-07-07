@@ -29,7 +29,7 @@
 
         let updatepoll = () => {
 // zwave
-          $http.get(`${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0`)
+          $http.get(`${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0&favorite=1`)
             .then(response => $scope.zwaveDevices = response.data.result)
 
 // alarm status
@@ -87,7 +87,7 @@
         ng-repeat="(k,v) in alarm_zones | filter: alarmDeviceFilter track by k"><strong>{{v.location}}:</strong>
       {{v.troubles[0] == "OPENED" ? "Open" : "Closed"}}
     </li>
-    <li ng-repeat="(k,v) in zwaveDevices |filter: {Favorite:1} track by k" ng-class="v.Status">
+    <li ng-repeat="(k,v) in zwaveDevices track by k" ng-class="v.Status">
       <strong>{{v.Name}}:</strong>
       {{v.Status}}
     </li>
