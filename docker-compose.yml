@@ -10,6 +10,7 @@ services:
         - com.df.distribute=true
         - com.df.serviceDomain=magicmirror.p.cns.me
         - com.df.port=80
+        - com.df.httpsOnly=true
         - com.df.servicePath=/
         - com.df.redirectWhenHttpProto=true
         - com.df.xForwardedProto=true
