@@ -2,6 +2,7 @@ pipeline:
 
   build:
     image: docker:dind
+    secrets: [ DOCKER_PASSWORD ]
     commands:
       - docker build -t pinked/magicmirror:latest .
       - docker login -u="chrisns" -p=${DOCKER_PASSWORD}
