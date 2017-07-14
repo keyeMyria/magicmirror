@@ -50,7 +50,7 @@
         $interval(updatepoll, 3000)
 
         // wemo socket
-        const socket = io.connect(wemo_url);
+        const socket = io.connect(wemo_url, {transports: ['websocket']});
         socket.on('connect', () => socket.emit('join', null));
         $scope.wemoDevices = {};
         socket.on("send:devicestate", device =>
