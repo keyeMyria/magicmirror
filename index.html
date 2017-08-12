@@ -23,12 +23,12 @@
       .controller('MyController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
         $scope.alarmDeviceFilter = (device) => device.subtype == "CONTACT_V" || device.subtype == "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype == "CONTACT_AUX";
 
-// get cameras
-        $http.get(cameras_url)
-          .then(response =>
-            $scope.cameras = response.data)
-
         let updatepoll = () => {
+// get cameras
+          $http.get(cameras_url)
+            .then(response =>
+              $scope.cameras = response.data)
+
 // zwave
           $http.get(`${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0&favorite=1`)
             .then(response => $scope.zwaveDevices = response.data.result)
