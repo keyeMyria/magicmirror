@@ -71,7 +71,7 @@
          ng-if="v" ng-src="{{v}}">
   </div>
   <ul id="devices">
-    <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status > 0 ?
+    <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status === true ?
       "" : "Not-Ready"}}
     </li>
     <li ng-if="proximities.cnsiphone" class="proximity" ng-class="proximities.cnsiphone.present ? 'Home' : 'Away'">
@@ -84,9 +84,9 @@
       {{proximities.hnsiphone.present ? "Home" :
       proximities.hnsiphone.distance.miles.toFixed(2) + " miles away"}}
     </li>
-    <li class="alarm-sensors" ng-class="v.troubles[0]"
+    <li class="alarm-sensors" ng-class="alarm.ready_status !== true ? v.troubles[0] : ''"
         ng-repeat="(k,v) in alarm_zones | filter: alarmDeviceFilter track by k"><strong>{{v.location}}:</strong>
-      {{v.troubles[0] == "OPENED" ? "Open" : "Closed"}}
+      {{v.troubles[0] == "OPENED" && alarm.ready_status !== true ? "Open" : "Closed"}}
     </li>
     <li ng-repeat="(k,v) in zwaveDevices track by k" ng-class="v.Status">
       <strong>{{v.Name}}:</strong>
