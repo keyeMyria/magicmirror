@@ -19,6 +19,12 @@
     const wemo_url = "http://192.168.0.3:15000";
   </script>
   <script>
+    // try to loose the address bar on android
+    window.scrollTo(0, 1)
+  </script>
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <script>
     angular.module('myApp', [])
       .controller('MyController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
         $scope.alarmDeviceFilter = (device) => device.subtype == "CONTACT_V" || device.subtype == "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype == "CONTACT_AUX";
