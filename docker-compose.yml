@@ -24,9 +24,9 @@ services:
         max_failure_ratio: 0.3
     image: pinked/magicmirror
     environment:
-      - PEER_DISCOVERY_NAME=magicmirror
-      - DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on
-      - DOCKER_VERNEMQ_ALLOW_MULTIPLE_SESSIONS=on
+      - MQTT_HOST=${MQTT_HOST}
+      - MQTT_USER=${MQTT_USER}
+      - MQTT_PASS=${MQTT_PASS}
 
 networks:
   proxy:

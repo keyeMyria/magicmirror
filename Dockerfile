@@ -1,4 +1,17 @@
 FROM nginx:alpine
-COPY . /usr/share/nginx/html
+
+RUN apk add --no-cache openssl
+
+ENV DOCKERIZE_VERSION v0.5.0
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+
+COPY index.html /usr/share/nginx/html/index.html
+
+
+CMD dockerize -delims "<%:%>" -template /usr/share/nginx/html/index.html:/usr/share/nginx/html/index.html nginx -g "daemon off;"
+
 
 HEALTHCHECK CMD wget -q localhost:80 -O /dev/null || exit 1

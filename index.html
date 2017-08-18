@@ -11,10 +11,12 @@
           integrity="sha256-bFYtqOZj1MLDlOrOlxCU9aruDP2zxiIKvmoo+dHsy4w=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"
           integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/mqtt@2.11.0/dist/mqtt.min.js"
+          integrity="sha384-M9Hm8rYDgQsssDRnNGFi6iKGl8EP7Y/pDyI0gPQ9xreLcsc1iIttv6crdx85YXPZ"
+          crossorigin="anonymous"></script>
   <script>
     const cameras_url = "https://cameras.p.cns.me";
     const zwave_url = "https://zwave.p.cns.me";
-    const alarm_url = "https://visonic.p.cns.me";
     const proximity_url = "https://locator.p.cns.me";
     const wemo_url = "http://192.168.0.3:15000";
   </script>
@@ -25,26 +27,47 @@
   <meta name="mobile-web-app-capable" content="yes">
 
   <script>
+    const client = mqtt.connect('<%.Env.MQTT_HOST%>', {
+      username: '<%.Env.MQTT_USER%>',
+      password: '<%.Env.MQTT_PASS%>',
+    })
+    client.on('connect', () => console.log("connected"))
+
     angular.module('myApp', [])
       .controller('MyController', ['$scope', '$http', '$interval', ($scope, $http, $interval) => {
-        $scope.alarmDeviceFilter = (device) => device.subtype == "CONTACT_V" || device.subtype == "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype == "CONTACT_AUX";
+        $scope.alarmDeviceFilter = (device) => device.subtype === "CONTACT_V" || device.subtype === "SHOCK_CONTACT_AUX_ANTIMASK" || device.subtype === "CONTACT_AUX";
+
+        client.on('connect', () => client.subscribe([
+          'alarm/state',
+          'alarm/status',
+          'alarm/zones/+'
+        ]))
+
+        client.on('message', (topic, message) => {
+          message = message.toString()
+          $scope.$apply(() => {
+            if (topic === 'alarm/state') {
+              _.set($scope, 'alarm.state', message)
+            }
+            if (topic === 'alarm/status') {
+              _.set($scope, 'alarm.ready_status', message)
+            }
+            if (_.startsWith(topic, 'alarm/zones/')) {
+              $scope.alarm_zones = $scope.alarm_zones || []
+              let payload = JSON.parse(message)
+              _.set($scope, `alarm_zones[${payload.zone}]`, payload)
+            }
+          })
+        })
 
         let updatepoll = () => {
 // get cameras
           $http.get(cameras_url)
             .then(response =>
               $scope.cameras = response.data)
-
 // zwave
           $http.get(`${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0&favorite=1`)
             .then(response => $scope.zwaveDevices = response.data.result)
-
-// alarm status
-          $http.get(alarm_url)
-            .then(response => {
-              $scope.alarm = response.data.partitions[0];
-              $scope.alarm_zones = response.data.zones
-            })
 
 // proximity
           $http.get(proximity_url)
@@ -77,7 +100,7 @@
          ng-if="v" ng-src="{{v}}">
   </div>
   <ul id="devices">
-    <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status === true ?
+    <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status === "true" ?
       "" : "Not-Ready"}}
     </li>
     <li ng-if="proximities.cnsiphone" class="proximity" ng-class="proximities.cnsiphone.present ? 'Home' : 'Away'">
