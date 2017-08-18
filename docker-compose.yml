@@ -22,7 +22,7 @@ services:
         failure_action: pause
         monitor: 60s
         max_failure_ratio: 0.3
-    image: pinked/magicmirror
+    image: pinked/magicmirror:${DRONE_BUILD_NUMBER}
     environment:
       - MQTT_HOST=${MQTT_HOST}
       - MQTT_USER=${MQTT_USER}
