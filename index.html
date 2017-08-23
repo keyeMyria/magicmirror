@@ -2,34 +2,31 @@
 <html>
 <head>
   <title>Le Chateau Pink</title>
+  <script src="./config.js"></script>
   <meta http-equiv="refresh" content="7200">
   <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no"/>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"
           integrity="sha256-3SrLjPeRPa1ofM280r+OMcUjJZKLWJHr6SRtRu3dRb0=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"
-          integrity="sha256-bFYtqOZj1MLDlOrOlxCU9aruDP2zxiIKvmoo+dHsy4w=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"
           integrity="sha256-8E6QUcFg1KTnpEU8TFGhpTGHw5fJqB9vCms3OhAYLqw=" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/mqtt@2.11.0/dist/mqtt.min.js"
           integrity="sha384-M9Hm8rYDgQsssDRnNGFi6iKGl8EP7Y/pDyI0gPQ9xreLcsc1iIttv6crdx85YXPZ"
           crossorigin="anonymous"></script>
   <script>
-    const cameras_url = "https://cameras.p.cns.me";
     const zwave_url = "https://zwave.p.cns.me";
     const proximity_url = "https://locator.p.cns.me";
-    const wemo_url = "http://192.168.0.3:15000";
   </script>
   <script>
     // try to loose the address bar on android
-    window.scrollTo(0, 1)
+    window.scrollTo(1, 1)
   </script>
   <meta name="mobile-web-app-capable" content="yes">
 
   <script>
-    const client = mqtt.connect('<%.Env.MQTT_HOST%>', {
-      username: '<%.Env.MQTT_USER%>',
-      password: '<%.Env.MQTT_PASS%>',
+    const client = mqtt.connect(MQTT_HOST, {
+      username: MQTT_USER,
+      password: MQTT_PASS
     })
     client.on('connect', () => console.log("connected"))
 
@@ -40,7 +37,11 @@
         client.on('connect', () => client.subscribe([
           'alarm/state',
           'alarm/status',
-          'alarm/zones/+'
+          'alarm/zones/+',
+          'cameras/+',
+          'presence/home/Chris',
+          'presence/home/Hannah',
+//          'zwave/switch/+'
         ]))
 
         client.on('message', (topic, message) => {
@@ -57,37 +58,30 @@
               let payload = JSON.parse(message)
               _.set($scope, `alarm_zones[${payload.zone}]`, payload)
             }
+            if (_.startsWith(topic, 'cameras/')) {
+              _.set($scope, `cameras[${topic.split("/")[1]}]`, message)
+            }
+
+            if (_.startsWith(topic, 'presence/home/')) {
+              _.set($scope, `presence[${topic.split("/")[2]}]`, message === "true")
+            }
+//            if (_.startsWith(topic, 'zwave/switch/')) {
+//              console.log(message)
+//              _.set($scope, `zwaveDevices[${topic.split("/")[2]}]`, message)
+//            }
+
           })
         })
 
         let updatepoll = () => {
-// get cameras
-          $http.get(cameras_url)
-            .then(response =>
-              $scope.cameras = response.data)
 // zwave
           $http.get(`${zwave_url}/json.htm?type=devices&filter=light&used=true&order=Name&plan=0&favorite=1`)
             .then(response => $scope.zwaveDevices = response.data.result)
-
-// proximity
-          $http.get(proximity_url)
-            .then(response =>
-              $scope.proximities = response.data
-            )
         }
 // poll
         updatepoll();
         $interval(updatepoll, 3000)
-
-        // wemo socket
-        const socket = io.connect(wemo_url, {transports: ['websocket']});
-        socket.on('connect', () => socket.emit('join', null));
-        $scope.wemoDevices = {};
-        socket.on("send:devicestate", device =>
-          $scope.$apply(() =>
-            $scope.wemoDevices[device.serialnumber] = device
-          ));
-        $scope.cameras = cameras;
+//
       }])
 
 
@@ -103,15 +97,8 @@
     <li class="alarm" ng-class="alarm.state"><strong>Alarm:</strong> {{alarm.state}} {{alarm.ready_status === "true" ?
       "" : "Not-Ready"}}
     </li>
-    <li ng-if="proximities.cnsiphone" class="proximity" ng-class="proximities.cnsiphone.present ? 'Home' : 'Away'">
-      <strong>Chris:</strong>
-      {{proximities.cnsiphone.present ? "Home" :
-      proximities.cnsiphone.distance.miles.toFixed(2) + " miles away"}}
-    </li>
-    <li ng-if="proximities.hnsiphone" class="proximity" ng-class="proximities.hnsiphone.present ? 'Home' : 'Away'">
-      <strong>Hannah:</strong>
-      {{proximities.hnsiphone.present ? "Home" :
-      proximities.hnsiphone.distance.miles.toFixed(2) + " miles away"}}
+    <li ng-repeat="(name, status) in presence" class="proximity" ng-class="status ? 'Home' : 'Away'">
+      <strong>{{name}}:</strong> {{status ? "Home" : "Away"}}
     </li>
     <li class="alarm-sensors" ng-class="alarm.ready_status !== true ? v.troubles[0] : ''"
         ng-repeat="(k,v) in alarm_zones | filter: alarmDeviceFilter track by k"><strong>{{v.location}}:</strong>
