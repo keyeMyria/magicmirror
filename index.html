@@ -4,6 +4,7 @@
   <title>Le Chateau Pink</title>
   <script src="./config.js"></script>
   <meta http-equiv="refresh" content="7200">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no"/>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"
@@ -13,6 +14,7 @@
   <script src="https://unpkg.com/mqtt@2.11.0/dist/mqtt.min.js"
           integrity="sha384-M9Hm8rYDgQsssDRnNGFi6iKGl8EP7Y/pDyI0gPQ9xreLcsc1iIttv6crdx85YXPZ"
           crossorigin="anonymous"></script>
+  <script src="https://darkskyapp.github.io/skycons/skycons.js"></script>
   <script>
     const zwave_url = "https://zwave.p.cns.me";
   </script>
@@ -20,7 +22,11 @@
     // try to loose the address bar on android
     window.scrollTo(1, 1)
   </script>
-  <meta name="mobile-web-app-capable" content="yes">
+
+  <script>
+    const skycons = new Skycons({"color": "white"})
+    skycons.play()
+  </script>
 
   <script>
     const client = mqtt.connect(MQTT_HOST, {
@@ -40,11 +46,18 @@
           'cameras/+',
           'presence/home/Chris',
           'presence/home/Hannah',
+          'weather/+',
+          'weather/currently/data'
 //          'zwave/switch/+'
         ]))
 
         client.on('message', (topic, message) => {
           message = message.toString()
+          let payload = {}
+          try {
+            payload = JSON.parse(message)
+          } catch (e) {
+          }
           $scope.$apply(() => {
             if (topic === 'alarm/state') {
               _.set($scope, 'alarm.state', message)
@@ -54,7 +67,6 @@
             }
             if (_.startsWith(topic, 'alarm/zones/')) {
               $scope.alarm_zones = $scope.alarm_zones || []
-              let payload = JSON.parse(message)
               _.set($scope, `alarm_zones[${payload.zone}]`, payload)
             }
             if (_.startsWith(topic, 'cameras/')) {
@@ -64,7 +76,22 @@
             if (_.startsWith(topic, 'presence/home/')) {
               _.set($scope, `presence[${topic.split("/")[2]}]`, message === "true")
             }
-//            if (_.startsWith(topic, 'zwave/switch/')) {
+//            if (_.startsWith(topic, 'weather/')) {
+//              _.set($scope, `weather[${topic.split("/")[1]}]`, payload)
+//            }
+            if (topic === "weather/currently") {
+              _.set($scope, `weather.currently`, payload)
+              skycons.add("currently", payload.icon)
+            }
+            if (topic === "weather/hourly") {
+              _.set($scope, `weather.hourly`, payload)
+              skycons.add("hourly", payload.icon)
+            }
+//            if (topic === "weather/currently/data") {
+//              _.set($scope, `weather.currently.data`, payload)
+//              skycons.add("currently", payload.icon)
+//            }
+            //            if (_.startsWith(topic, 'zwave/switch/')) {
 //              console.log(message)
 //              _.set($scope, `zwaveDevices[${topic.split("/")[2]}]`, message)
 //            }
@@ -88,6 +115,26 @@
 </head>
 <body ng-app="myApp" ng-controller="MyController">
 <main>
+  <div id="weather">
+    <h2>Weather</h2>
+    <div class="currently">
+      <h3>Current</h3>
+      <canvas id="currently" width="128" height="128"></canvas>
+      <strong>{{weather.currently.summary}}</strong>
+      Chance of rain: {{Math.round(weather.currently.precipProbability) || 0}}% <br/>
+      Temperature: {{Math.round(weather.currently.apparentTemperature) || 0}}°C
+    </div>
+    <div class="hourly">
+      <h3>Today</h3>
+      <canvas id="hourly" width="128" height="128"></canvas>
+      {{weather.hourly.summary}}
+    </div>
+    <div class="daily">
+      <canvas id="daily" width="128" height="128"></canvas>
+      {{weather.hourly.summary}}
+    </div>
+    {{weather}}
+  </div>
   <div id="cameras">
     <img class="webcam" ng-repeat="(k,v) in cameras track by k"
          ng-if="v" ng-src="{{v}}">
