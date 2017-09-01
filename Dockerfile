@@ -7,8 +7,8 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-
-COPY index.html /usr/share/nginx/html/index.html
+RUN rm -r /usr/share/nginx/html/
+COPY dist /usr/share/nginx/html
 COPY config.js.tpl /usr/share/nginx/html/config.js.tpl
 
 
