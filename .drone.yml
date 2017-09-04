@@ -2,7 +2,9 @@ pipeline:
 
   build:
     image: node:alpine
-    command: npm install && node_modules/.bin/ng build
+    commands:
+      - npm install
+      - node_modules/.bin/ng build"
 
   docker:
     image: plugins/docker
