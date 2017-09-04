@@ -9,10 +9,10 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 RUN rm -r /usr/share/nginx/html/
 COPY dist /usr/share/nginx/html
-COPY config.js.tpl /usr/share/nginx/html/config.js.tpl
+COPY config.json.tpl /usr/share/nginx/html/config.json.tpl
 
 
-CMD dockerize -template /usr/share/nginx/html/config.js.tpl:/usr/share/nginx/html/config.js nginx -g "daemon off;"
+CMD dockerize -template /usr/share/nginx/html/config.json.tpl:/usr/share/nginx/html/config.json nginx -g "daemon off;"
 
 
 HEALTHCHECK CMD wget -q localhost:80 -O /dev/null || exit 1
