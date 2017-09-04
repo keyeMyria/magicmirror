@@ -1,0 +1,63 @@
+@import '../../font-awesome.sass'
+
+\:host
+  display: block
+  float: left
+  width: 525px
+
+.hourly
+  clear: both
+  float: left
+  font-size: 1em
+  position: relative
+  td
+    line-height: 3em
+  weather-icon
+    font-size: 0.05em
+    margin-left: -2em
+    display: block
+    margin-top: -5em
+    height: 5em
+//+gradient
+
+.temp-high:before
+  margin: 0 0.3em
+  @extend .fa, .fa-arrow-up
+
+.temp-low:before
+  margin: 0 0.3em
+  @extend .fa, .fa-arrow-down
+
+.rain:before
+  margin: 0 0.3em
+  @extend .fa, .fa-tint
+
+.current
+  weather-icon
+    display: block
+    margin-top: -2em
+    height: 17em
+    margin-left: -3.5em
+    width: 24em
+    float: left
+  .summary
+    font-size: 2.5vw
+    margin: 0 0 0.3em 0
+    text-align: justify
+    text-justify: inter-word
+    text-align-last: justify
+
+  .temp
+    margin-top: 1.2em
+    font-size: 4em
+  &:after
+    display: block
+    content: ""
+    clear: both
+
+.forecast
+  float: left
+  margin: 1em 0 0 2em
+  display: block
+  h3
+    display: inline
