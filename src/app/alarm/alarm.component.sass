@@ -1,0 +1,39 @@
+@import '../../font-awesome.sass'
+\:host
+  display: block
+  float: left
+
+ul
+  list-style: none
+  padding: 0
+  li
+    display: block
+    padding: 0.4em
+    background: orange
+    animation: blinker 2s ease-in-out infinite
+    font-size: 2em
+
+p.alarm-status
+  font-size: 2.5em
+  &:before
+    margin: 0 0.3em
+    @extend .fa, .fa-bell-slash
+  &.home, &.away
+    animation: armed 2s ease-in-out infinite
+    &:before
+      @extend .fa, .fa-bell
+  &.exitdelayaway,
+  &.exitdelayhome
+    animation: arming 2s ease-in-out infinite
+
+@keyframes armed
+  50%
+    color: lightgreen
+
+@keyframes arming
+  50%
+    color: red
+
+@keyframes blinker
+  50%
+    opacity: 0.5

@@ -1,0 +1,8 @@
+<p class="alarm-status" [ngClass]="alarm.state | lowercase">
+  Alarm is {{alarm.state | alarmStateToString | lowercase}} {{alarm.status ? '' : 'and not ready to arm'}}
+</p>
+<section class="openZones" *ngIf="troubledZones.length > 0">
+  <ul>
+    <li *ngFor="let zone of troubledZones">{{zone.location}} is open</li>
+  </ul>
+</section>
