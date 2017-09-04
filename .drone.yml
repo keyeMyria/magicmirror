@@ -3,7 +3,8 @@ pipeline:
   build:
     image: node:alpine
     commands:
-      - npm --quiet install
+      - npm --silent install
+      - node_modules/.bin/napa
       - node_modules/.bin/ng build
 
   docker:
