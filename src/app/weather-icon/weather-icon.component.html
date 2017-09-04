@@ -1,0 +1,12 @@
+<!--
+"clear-day", "clear-night", "partly-cloudy-day", "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind", "fog"
+-->
+<div class="icon">
+  <div *ngIf="ic.includes('cloud') || ic.includes('rain')" class="cloud"></div>
+  <div *ngIf="ic.includes('cloud') || ic.includes('rain')" class="cloud"></div>
+  <div *ngIf="ic.includes('clear') || ic.includes('partly')" class="sun">
+    <div class="rays"></div>
+  </div>
+  <div *ngIf="ic.includes('rain')" class="rain"></div>
+  <div *ngIf="ic.includes('snow')" class="snow"></div>
+</div>
