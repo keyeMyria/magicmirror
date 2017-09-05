@@ -2,8 +2,7 @@
 \:host
   display: block
   float: left
-  max-width: 400px
-  padding: 1em
+  width: 30vw
 
 ul
   list-style: none
@@ -24,6 +23,7 @@ p.alarm-status
     animation: armed 2s ease-in-out infinite
     &:before
       @extend .fa, .fa-bell
+      animation: wiggle 1s linear infinite
   &.exitdelayaway,
   &.exitdelayhome
     animation: arming 2s ease-in-out infinite
@@ -39,3 +39,11 @@ p.alarm-status
 @keyframes blinker
   50%
     opacity: 0.5
+
+@keyframes wiggle
+  0%, 100%
+    transform: rotate(0deg)
+  25%
+    transform: rotate(10deg)
+  75%
+    transform: rotate(-10deg)
