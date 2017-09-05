@@ -1,0 +1,7 @@
+{
+  "name": "Le Chateau Pink",
+  "icons": [],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape"
+}
