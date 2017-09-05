@@ -21,7 +21,7 @@ export class AlarmComponent implements OnInit {
   }
 
   public get troubledZones(): Array<object> {
-    return filter(this.zones, zone => zone.troubles !== null);
+    return filter(this.zones, zone => zone.troubles && zone.troubles !== null);
   }
 
   ngOnInit() {
