@@ -18,7 +18,7 @@ import {WeatherIconComponent} from './weather-icon/weather-icon.component';
 import {CamerasComponent} from './cameras/cameras.component';
 import {AlarmComponent} from './alarm/alarm.component';
 import {AlarmStateToStringPipe} from './alarm/alarm.pipes';
-import { DoorbellComponent } from './doorbell/doorbell.component';
+import {DoorbellComponent} from './doorbell/doorbell.component';
 
 export const MQTT_SERVICE_OPTIONS: MqttServiceOptions = {
   hostname: 'mqtt.p.cns.me',
