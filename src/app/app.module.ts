@@ -4,6 +4,7 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {KeysPipe, StateToStringPipe, StateToClassPipe} from './pipes';
 import {FormsModule} from '@angular/forms';
+import {environment} from '../environments/environment';
 
 import {
   MqttMessage,
@@ -20,16 +21,16 @@ import {AlarmComponent} from './alarm/alarm.component';
 import {AlarmStateToStringPipe} from './alarm/alarm.pipes';
 import {DoorbellComponent} from './doorbell/doorbell.component';
 
-export const MQTT_SERVICE_OPTIONS: MqttServiceOptions = {
-  hostname: 'mqtt.p.cns.me',
-  username: 'magicmirror',
-  password: 'B5F574A8-6CD0-42E5-83E2-EE0549F36D52',
-  protocol: 'wss',
-  path: '/mqtt',
-  port: 443
-};
-
 export function mqttServiceFactory() {
+  let env = environment['__zone_symbol__value'];
+  const MQTT_SERVICE_OPTIONS: MqttServiceOptions = {
+    hostname: env['MQTT_HOST'],
+    username: env['MQTT_USER'],
+    password: env['MQTT_PASS'],
+    protocol: 'wss',
+    path: '/mqtt',
+    port: 443
+  };
   return new MqttService(MQTT_SERVICE_OPTIONS);
 }
 
@@ -58,4 +59,8 @@ export function mqttServiceFactory() {
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
+  public load() {
+    console.log('foo');
+  }
 }
