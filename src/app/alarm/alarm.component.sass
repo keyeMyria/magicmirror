@@ -19,6 +19,7 @@ ul
 
 p.alarm-status
   font-size: 2.5em
+  text-align: center
   &:before
     margin: 0 0 0.2em 0
     display: block
@@ -27,11 +28,11 @@ p.alarm-status
     opacity: 0.5
     @extend .fa, .fa-bell-slash
   &.home, &.away
-    animation: armed 2s ease-in-out infinite
+    animation: armed 4s ease-in-out infinite
     &:before
       opacity: 1
-      @extend .fa, .fa-bell
-      animation: wiggle 1s linear infinite
+      @extend .fa-bell
+      animation: wiggle 3s linear infinite
   &.exitdelayaway,
   &.exitdelayhome
     animation: arming 2s ease-in-out infinite
@@ -52,6 +53,6 @@ p.alarm-status
   0%, 100%
     transform: rotate(0deg)
   25%
-    transform: rotate(10deg)
+    transform: rotate(5deg)
   75%
-    transform: rotate(-10deg)
+    transform: rotate(-5deg)

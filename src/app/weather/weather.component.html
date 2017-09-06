@@ -1,6 +1,5 @@
 <div class="current">
-  <p class="summary">{{weather.currently.summary}} ~
-    {{weather.minutely.summary}}</p>
+  <p class="summary">{{weather.minutely.summary}}</p>
   <weather-icon [ic]="weather.currently.icon"></weather-icon>
   <div class="temp">{{weather.currently.apparentTemperature | number:'1.0-1'}}°C</div>
   <span class="temp-high">{{weather['daily/data'][0].apparentTemperatureHigh | number:'1.0-0'}}°C</span>
