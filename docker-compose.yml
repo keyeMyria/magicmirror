@@ -5,6 +5,10 @@ services:
       - proxy
     deploy:
       replicas: 2
+      resources:
+        limits:
+          cpus: '0.40'
+          memory: 128M
       labels:
         - com.df.notify=true
         - com.df.distribute=true
