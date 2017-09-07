@@ -3,7 +3,19 @@
 <head>
   <meta charset="utf-8">
   <title>Le Chateau Pink</title>
-  <meta http-equiv="refresh" content="7200">
+  <script>
+    setInterval(() => {
+      let xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = () => {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+          console.log("reloading")
+          location.reload()
+        }
+      }
+      xmlHttp.open("GET", window.location.href, true)
+      xmlHttp.send(null)
+    }, 7200000)
+  </script>
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="/manifest.json">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes"/>
