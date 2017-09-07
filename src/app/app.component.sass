@@ -1,0 +1,17 @@
+@import '../font-awesome.sass'
+
+.connection-error
+  display: block
+  clear: both
+  font-size: 10vh
+  text-align: center
+  &:before
+    display: block
+    font-size: 80vh
+    opacity: 0.33
+    @extend .fa, .fa-exclamation-circle
+    animation: armed 5s linear infinite
+
+@keyframes armed
+  50%
+    color: red
