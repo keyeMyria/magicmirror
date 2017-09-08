@@ -8,7 +8,7 @@
 </div>
 <table class="hourly">
   <tr *ngFor="let hour of weather['hourly/data'] | slice:0:12">
-    <td>{{hours(hour.time)}}:00</td>
+    <td>{{hours(hour.time)}}</td>
     <td>
       <weather-icon [ic]="hour.icon"></weather-icon>
     </td>
