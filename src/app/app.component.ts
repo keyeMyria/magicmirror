@@ -31,6 +31,11 @@ export class AppComponent {
     return get(this.messages, 'cameras', []);
   }
 
+
+  public get doorbell(): object {
+    return get(this.messages, 'zwave.switch[195]', {});
+  }
+
   constructor(private mqtt: MqttService, private cdRef: ChangeDetectorRef) {
     mqtt.onMessage.subscribe(m => {
       let topic = m.topic.replace('/', '.');
