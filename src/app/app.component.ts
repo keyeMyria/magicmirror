@@ -17,7 +17,7 @@ export class AppComponent {
   public filter: string;
   public message: string;
 
-  public messages: object;
+  public messages: object = {};
 
   public get state(): BehaviorSubject<MqttConnectionState> {
     return this.mqtt.state;
