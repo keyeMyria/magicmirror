@@ -2,9 +2,11 @@
   <p class="summary">{{weather.minutely.summary}}</p>
   <weather-icon [ic]="weather.currently.icon"></weather-icon>
   <div class="temp">{{weather.currently.apparentTemperature | number:'1.0-1'}}°C</div>
-  <span class="temp-high">{{weather['daily/data'][0].apparentTemperatureHigh | number:'1.0-0'}}°C</span>
-  <span class="temp-low">{{weather['daily/data'][0].apparentTemperatureLow | number:'1.0-0'}}°C</span>
-  <span class="rain">{{weather.currently.precipProbability * 100}}%</span>
+  <div class="details">
+    <span class="temp-high">{{weather['daily/data'][0].apparentTemperatureHigh | number:'1.0-0'}}°C</span>
+    <span class="temp-low">{{weather['daily/data'][0].apparentTemperatureLow | number:'1.0-0'}}°C</span>
+    <span class="rain">{{weather.currently.precipProbability * 100 | number:'1.0-0'}}%</span>
+  </div>
 </div>
 <table class="hourly">
   <tr *ngFor="let hour of weather['hourly/data'] | slice:0:12">
