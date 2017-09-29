@@ -15,6 +15,8 @@ pipeline:
       - latest
       - ${DRONE_BUILD_NUMBER}
     secrets: [ docker_username, docker_password ]
+    when:
+      branch: master
 
   deploy:
     image: docker
