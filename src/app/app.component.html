@@ -1,5 +1,5 @@
 <main class="connection-error" *ngIf="(state | async) !== 2">{{(state | async) | stateToString}}</main>
-<main [hidden]="(state | async) !== 2">
+<main *ngIf="(state | async) === 2">
   <weather [weather]="weather" *ngIf="messages && messages.weather"></weather>
   <alarm [alarm]="messages.alarm" *ngIf="messages && messages.alarm && messages.alarm.connected"></alarm>
   <doorbell [status]="doorbell" *ngIf="doorbell"></doorbell>
