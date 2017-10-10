@@ -18,7 +18,7 @@ describe('CamerasComponent', () => {
     fixture = TestBed.createComponent(CamerasComponent);
     component = fixture.componentInstance;
     compiled = fixture.debugElement.nativeElement;
-    component.cameras = ['one', 'two'];
+    component.cameras = [{name: 'external-one', url: 'one'}, {name: 'external-two', url: 'two'}, {name: 'internal-three', url: 'three'}];
     fixture.detectChanges();
   });
 
