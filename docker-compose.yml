@@ -31,6 +31,7 @@ services:
       - MQTT_HOST=${MQTT_HOST}
       - MQTT_USER=${MQTT_USER}
       - MQTT_PASS=${MQTT_PASS}
+      - REGION=${REGION}
 
 networks:
   proxy:
