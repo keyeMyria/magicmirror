@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "napa && ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -22,6 +22,9 @@
     "@angular/platform-browser": "^4.4.6",
     "@angular/platform-browser-dynamic": "^4.4.6",
     "@angular/router": "^4.4.6",
+    "aws-iot-device-sdk": "^2.2.0",
+    "aws-sdk": "^2.176.0",
+    "aws-signature-v4": "^1.1.0",
     "core-js": "^2.5.3",
     "font-awesome": "^4.7.0",
     "lodash": "^4.17.4",
