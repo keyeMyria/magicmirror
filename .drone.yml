@@ -1,13 +1,5 @@
 pipeline:
 
-  build:
-    image: node
-    commands:
-      - npm --silent install
-      - node_modules/.bin/napa
-      - node_modules/.bin/ng test --single-run --browsers PhantomJS
-      - node_modules/.bin/ng build
-
   docker:
     image: plugins/docker
     repo: pinked/magicmirror
