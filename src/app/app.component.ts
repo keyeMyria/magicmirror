@@ -30,18 +30,11 @@ export class AppComponent {
   }
 
   public get cameras(): Array<string> {
-    console.log(this.messages);
     return get(this.messages, 'cameras', []);
   }
 
 
-  public get doorbell(): object {
-    return get(this.messages, 'zwave.switch[195]', {});
-  }
-
   constructor(private mqtt: MqttService, private cdRef: ChangeDetectorRef) {
-    // this.subscribe('alarm/#');
-
 
     this.thingSubscribe('alarm_status', 'alarm');
     this.thingSubscribe('camera_external_driveway', 'cameras[0]');
@@ -55,18 +48,19 @@ export class AppComponent {
 
   }
 
-  public subscribe(filter: string): void {
-    this.mqtt.observe(filter);
-  }
-
   public thingSubscribe(thing: string, set_to: string): Observable<MqttMessage> {
-    const foo = this.mqtt.observe(`$aws/things/${thing}/shadow/get/accepted`);
+    const initial_get = this.mqtt.observe(`$aws/things/${thing}/shadow/get/accepted`);
+    const updates = this.mqtt.observe(`$aws/things/${thing}/shadow/update/accepted`);
 
-    foo.subscribe(message =>
-      set(this.messages, set_to, JSON.parse(message.payload.toString()).state.reported)
-    );
+    const setit = (message: { payload: object }): void =>
+      set(this.messages, set_to, JSON.parse(message.payload.toString()).state.reported);
+
+    initial_get.subscribe(() => this.mqtt.observables[`$aws/things/${thing}/shadow/get/accepted`] = null);
+    initial_get.subscribe(setit);
     this.mqtt.publish(`$aws/things/${thing}/shadow/get`, '{}').toPromise();
-    return foo;
+    updates.subscribe(setit);
+
+    return updates;
   }
 
   public publish(topic: string): void {
