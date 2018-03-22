@@ -47,10 +47,10 @@ export class AppComponent {
     this.thingSubscribe('camera_external_driveway', 'cameras[0]');
     this.thingSubscribe('camera_external_garden', 'cameras[1]');
     this.thingSubscribe('camera_external_porch', 'cameras[2]');
-    // this.subscribe('weather/currently');
-    // this.subscribe('weather/minutely');
-    // this.subscribe('weather/hourly/data');
-    // this.subscribe('weather/daily/data');
+    this.thingSubscribe('weather_currently', 'weather.currently');
+    this.thingSubscribe('weather_minutely', 'weather.minutely');
+    this.thingSubscribe('weather_hourly', 'weather.hourly');
+    this.thingSubscribe('weather_daily', 'weather.daily');
     // this.subscribe('zwave/switch/195');
 
   }
