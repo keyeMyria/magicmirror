@@ -7,7 +7,7 @@ import {FormsModule} from '@angular/forms';
 import {environment} from '../environments/environment';
 
 var AWSIoTData = require('aws-iot-device-sdk');
-var clientId = 'mqtt-explorer-' + (Math.floor((Math.random() * 100000) + 1));
+var clientId = 'magicmirror-' + (Math.floor((Math.random() * 100000) + 1));
 
 import {
   MqttModule,
